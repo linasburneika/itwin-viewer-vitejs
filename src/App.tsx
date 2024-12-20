@@ -3,31 +3,31 @@
  * See LICENSE.md in the project root for license terms and full copyright notice.
  *--------------------------------------------------------------------------------------------*/
 
-import './App.css';
+import "./App.css";
 
-import type { ScreenViewport } from '@itwin/core-frontend';
-import { FitViewTool, IModelApp, StandardViewId } from '@itwin/core-frontend';
-import { FillCentered } from '@itwin/core-react';
-import { ECSchemaRpcInterface } from '@itwin/ecschema-rpcinterface-common';
-import { ProgressLinear } from '@itwin/itwinui-react';
+import type { ScreenViewport } from "@itwin/core-frontend";
+import { FitViewTool, IModelApp, StandardViewId } from "@itwin/core-frontend";
+import { FillCentered } from "@itwin/core-react";
+import { ECSchemaRpcInterface } from "@itwin/ecschema-rpcinterface-common";
+import { ProgressLinear } from "@itwin/itwinui-react";
 import {
   MeasurementActionToolbar,
   MeasureTools,
   MeasureToolsUiItemsProvider,
-} from '@itwin/measure-tools-react';
+} from "@itwin/measure-tools-react";
 import {
   AncestorsNavigationControls,
   CopyPropertyTextContextMenuItem,
   PropertyGridManager,
   PropertyGridUiItemsProvider,
   ShowHideNullValuesSettingsMenuItem,
-} from '@itwin/property-grid-react';
+} from "@itwin/property-grid-react";
 import {
   CategoriesTreeComponent,
   createTreeWidget,
   ModelsTreeComponent,
   TreeWidget,
-} from '@itwin/tree-widget-react';
+} from "@itwin/tree-widget-react";
 import {
   //useAccessToken,
   Viewer,
@@ -35,12 +35,11 @@ import {
   ViewerNavigationToolsProvider,
   ViewerPerformance,
   ViewerStatusbarItemsProvider,
-} from '@itwin/web-viewer-react';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+} from "@itwin/web-viewer-react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { Auth } from './Auth';
-import { history } from './history';
-import { getSchemaContext, unifiedSelectionStorage } from './selectionStorage';
+import { Auth } from "./Auth";
+import { getSchemaContext, unifiedSelectionStorage } from "./selectionStorage";
 
 const App: React.FC = () => {
   const [iModelId, setIModelId] = useState(import.meta.env.VITE_IMJS_IMODEL_ID);
@@ -68,29 +67,29 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('iTwinId')) {
-      setITwinId(urlParams.get('iTwinId') as string);
+    if (urlParams.has("iTwinId")) {
+      setITwinId(urlParams.get("iTwinId") as string);
     }
-    if (urlParams.has('iModelId')) {
-      setIModelId(urlParams.get('iModelId') as string);
+    if (urlParams.has("iModelId")) {
+      setIModelId(urlParams.get("iModelId") as string);
     }
-    if (urlParams.has('changesetId')) {
-      setChangesetId(urlParams.get('changesetId') as string);
+    if (urlParams.has("changesetId")) {
+      setChangesetId(urlParams.get("changesetId") as string);
     }
   }, []);
 
-  useEffect(() => {
-    let url = `viewer?iTwinId=${iTwinId}`;
+  // useEffect(() => {
+  //   let url = `viewer?iTwinId=${iTwinId}`;
 
-    if (iModelId) {
-      url = `${url}&iModelId=${iModelId}`;
-    }
+  //   if (iModelId) {
+  //     url = `${url}&iModelId=${iModelId}`;
+  //   }
 
-    if (changesetId) {
-      url = `${url}&changesetId=${changesetId}`;
-    }
-    history.push(url);
-  }, [iTwinId, iModelId, changesetId]);
+  //   if (changesetId) {
+  //     url = `${url}&changesetId=${changesetId}`;
+  //   }
+  //   history.push(url);
+  // }, [iTwinId, iModelId, changesetId]);
 
   /** NOTE: This function will execute the "Fit View" tool after the iModel is loaded into the Viewer.
    * This will provide an "optimal" view of the model. However, it will override any default views that are
@@ -104,11 +103,11 @@ const App: React.FC = () => {
         const start = new Date();
         const intvl = setInterval(() => {
           if (viewPort.areAllTileTreesLoaded) {
-            ViewerPerformance.addMark('TilesLoaded');
+            ViewerPerformance.addMark("TilesLoaded");
             ViewerPerformance.addMeasure(
-              'TileTreesLoaded',
-              'ViewerStarting',
-              'TilesLoaded'
+              "TileTreesLoaded",
+              "ViewerStarting",
+              "TilesLoaded"
             );
             clearInterval(intvl);
             resolve(true);
@@ -147,13 +146,13 @@ const App: React.FC = () => {
       {!accessToken && (
         <FillCentered>
           <div className="signin-content">
-            <ProgressLinear indeterminate={true} labels={['Signing in...']} />
+            <ProgressLinear indeterminate={true} labels={["Signing in..."]} />
           </div>
         </FillCentered>
       )}
       <Viewer
-        iTwinId={iTwinId ?? ''}
-        iModelId={iModelId ?? ''}
+        iTwinId={iTwinId ?? ""}
+        iModelId={iModelId ?? ""}
         changeSetId={changesetId}
         authClient={authClient}
         viewCreatorOptions={viewCreatorOptions}
@@ -161,8 +160,8 @@ const App: React.FC = () => {
         onIModelAppInit={onIModelAppInit}
         mapLayerOptions={{
           BingMaps: {
-            key: 'key',
-            value: import.meta.env.VITE_IMJS_BING_MAPS_KEY ?? '',
+            key: "key",
+            value: import.meta.env.VITE_IMJS_BING_MAPS_KEY ?? "",
           },
         }}
         backendConfiguration={{
@@ -177,63 +176,63 @@ const App: React.FC = () => {
               measureGroup: false,
             },
           }),
-          new ViewerStatusbarItemsProvider(),
-          {
-            id: 'TreeWidgetUIProvider',
-            getWidgets: () => [
-              createTreeWidget({
-                trees: [
-                  {
-                    id: ModelsTreeComponent.id,
-                    getLabel: () => ModelsTreeComponent.getLabel(),
-                    render: (props) => (
-                      <ModelsTreeComponent
-                        getSchemaContext={getSchemaContext}
-                        density={props.density}
-                        selectionStorage={unifiedSelectionStorage}
-                        selectionMode={'extended'}
-                        onPerformanceMeasured={props.onPerformanceMeasured}
-                        onFeatureUsed={props.onFeatureUsed}
-                      />
-                    ),
-                  },
-                  {
-                    id: CategoriesTreeComponent.id,
-                    getLabel: () => CategoriesTreeComponent.getLabel(),
-                    render: (props) => (
-                      <CategoriesTreeComponent
-                        getSchemaContext={getSchemaContext}
-                        density={props.density}
-                        selectionStorage={unifiedSelectionStorage}
-                        onPerformanceMeasured={props.onPerformanceMeasured}
-                        onFeatureUsed={props.onFeatureUsed}
-                      />
-                    ),
-                  },
-                ],
-              }),
-            ],
-          },
-          new PropertyGridUiItemsProvider({
-            propertyGridProps: {
-              autoExpandChildCategories: true,
-              ancestorsNavigationControls: (props) => (
-                <AncestorsNavigationControls {...props} />
-              ),
-              contextMenuItems: [
-                (props) => <CopyPropertyTextContextMenuItem {...props} />,
-              ],
-              settingsMenuItems: [
-                (props) => (
-                  <ShowHideNullValuesSettingsMenuItem
-                    {...props}
-                    persist={true}
-                  />
-                ),
-              ],
-            },
-          }),
-          new MeasureToolsUiItemsProvider(),
+          // new ViewerStatusbarItemsProvider(),
+          // {
+          //   id: "TreeWidgetUIProvider",
+          //   getWidgets: () => [
+          //     createTreeWidget({
+          //       trees: [
+          //         {
+          //           id: ModelsTreeComponent.id,
+          //           getLabel: () => ModelsTreeComponent.getLabel(),
+          //           render: (props) => (
+          //             <ModelsTreeComponent
+          //               getSchemaContext={getSchemaContext}
+          //               density={props.density}
+          //               selectionStorage={unifiedSelectionStorage}
+          //               selectionMode={"extended"}
+          //               onPerformanceMeasured={props.onPerformanceMeasured}
+          //               onFeatureUsed={props.onFeatureUsed}
+          //             />
+          //           ),
+          //         },
+          //         {
+          //           id: CategoriesTreeComponent.id,
+          //           getLabel: () => CategoriesTreeComponent.getLabel(),
+          //           render: (props) => (
+          //             <CategoriesTreeComponent
+          //               getSchemaContext={getSchemaContext}
+          //               density={props.density}
+          //               selectionStorage={unifiedSelectionStorage}
+          //               onPerformanceMeasured={props.onPerformanceMeasured}
+          //               onFeatureUsed={props.onFeatureUsed}
+          //             />
+          //           ),
+          //         },
+          //       ],
+          //     }),
+          //   ],
+          // },
+          // new PropertyGridUiItemsProvider({
+          //   propertyGridProps: {
+          //     autoExpandChildCategories: true,
+          //     ancestorsNavigationControls: (props) => (
+          //       <AncestorsNavigationControls {...props} />
+          //     ),
+          //     contextMenuItems: [
+          //       (props) => <CopyPropertyTextContextMenuItem {...props} />,
+          //     ],
+          //     settingsMenuItems: [
+          //       (props) => (
+          //         <ShowHideNullValuesSettingsMenuItem
+          //           {...props}
+          //           persist={true}
+          //         />
+          //       ),
+          //     ],
+          //   },
+          // }),
+          // new MeasureToolsUiItemsProvider(),
         ]}
         selectionStorage={unifiedSelectionStorage}
         getSchemaContext={getSchemaContext}
