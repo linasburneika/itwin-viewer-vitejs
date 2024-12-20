@@ -8,8 +8,7 @@
     "dev": "npm run copy-assets && vite",
     "build": "tsc -b && npm run copy-assets && vite build",
     "lint": "eslint .",
-    "preview": "npm run copy-assets && vite preview",
-    "copy": "copy-files-from-to"
+    "preview": "npm run copy-assets && vite preview"
   },
   "dependencies": {
     "@bentley/icons-generic": "^1.0.34",
@@ -74,11 +73,5 @@
     "vite-plugin-svgr": "^4.3.0",
     "vite-plugin-replace": "^0.1.1",
     "copyfiles": "^2.4.1"
-  },
-  "copyFiles": [
-    {
-      "from": "node_modules/@itwin/**/lib/public/**/*",
-      "to": "public/"
-    }
-  ]
+  }
 }

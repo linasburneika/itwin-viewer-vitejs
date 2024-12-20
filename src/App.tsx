@@ -29,7 +29,7 @@ import {
   TreeWidget,
 } from '@itwin/tree-widget-react';
 import {
-  useAccessToken,
+  //useAccessToken,
   Viewer,
   ViewerContentToolsProvider,
   ViewerNavigationToolsProvider,
@@ -49,21 +49,22 @@ const App: React.FC = () => {
     import.meta.env.VITE_IMJS_AUTH_CLIENT_CHANGESET_ID
   );
 
-  const accessToken = useAccessToken();
+  //const accessToken = useAccessToken();
+  const accessToken = "provided";
 
   const authClient = Auth.getClient();
 
-  const login = useCallback(async () => {
-    try {
-      await authClient.signInSilent();
-    } catch {
-      await authClient.signIn();
-    }
-  }, [authClient]);
+  // const login = useCallback(async () => {
+  //   try {
+  //     await authClient.signInSilent();
+  //   } catch {
+  //     await authClient.signIn();
+  //   }
+  // }, [authClient]);
 
-  useEffect(() => {
-    void login();
-  }, [login]);
+  // useEffect(() => {
+  //   void login();
+  // }, [login]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -142,7 +143,7 @@ const App: React.FC = () => {
 
   return (
     <div className="viewer-container">
-      <h1>viewer</h1>
+      <h1>iTwin.js web-viewer on vite.js</h1>
       {!accessToken && (
         <FillCentered>
           <div className="signin-content">

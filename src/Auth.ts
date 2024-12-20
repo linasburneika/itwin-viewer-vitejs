@@ -14,6 +14,10 @@ export class Auth {
   ): BrowserAuthorizationClient {
     if (!this._client) {
       this._client = new BrowserAuthorizationClient(options);
+      this._client.getAccessToken = async () => {
+        const token = await this.getAccessToken();
+        return `bearer ${token}`;
+      }
     }
 
     return this._client;
@@ -36,4 +40,12 @@ export class Auth {
     }
     this._client.handleSigninCallback();
   }
-}
+
+  public static async getAccessToken() {
+    return await fetch("https://connect-itwinjscodesandbox.bentley.com/api/userToken")
+      .then((response) => response.json())
+      .then((data) =>
+        data._jwt
+      );
+    }
+  }
