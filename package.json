@@ -32,7 +32,7 @@
     "@itwin/ecschema-rpcinterface-common": "^4.10.2",
     "@itwin/imodel-components-react": "^5.0.0",
     "@itwin/imodels-access-frontend": "^5.2.3",
-    "@itwin/itwinui-react": "^3.16.1",
+    "@itwin/itwinui-react": "^3.16.3",
     "@itwin/measure-tools-react": "^0.24.1",
     "@itwin/presentation-common": "^4.10.2",
     "@itwin/presentation-components": "^5.7.0",

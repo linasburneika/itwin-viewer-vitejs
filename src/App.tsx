@@ -7,9 +7,7 @@ import "./App.css";
 
 import type { ScreenViewport } from "@itwin/core-frontend";
 import { FitViewTool, IModelApp, StandardViewId } from "@itwin/core-frontend";
-import { FillCentered } from "@itwin/core-react";
 import { ECSchemaRpcInterface } from "@itwin/ecschema-rpcinterface-common";
-import { ProgressLinear } from "@itwin/itwinui-react";
 import {
   MeasurementActionToolbar,
   MeasureTools,
@@ -29,67 +27,22 @@ import {
   TreeWidget,
 } from "@itwin/tree-widget-react";
 import {
-  //useAccessToken,
   Viewer,
   ViewerContentToolsProvider,
   ViewerNavigationToolsProvider,
   ViewerPerformance,
   ViewerStatusbarItemsProvider,
 } from "@itwin/web-viewer-react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { Auth } from "./Auth";
 import { getSchemaContext, unifiedSelectionStorage } from "./selectionStorage";
 
 const App: React.FC = () => {
-  const [iModelId, setIModelId] = useState(import.meta.env.VITE_IMJS_IMODEL_ID);
-  const [iTwinId, setITwinId] = useState(import.meta.env.VITE_IMJS_ITWIN_ID);
-  const [changesetId, setChangesetId] = useState(
-    import.meta.env.VITE_IMJS_AUTH_CLIENT_CHANGESET_ID
-  );
-
-  //const accessToken = useAccessToken();
-  const accessToken = "provided";
-
+  const iTwinId = import.meta.env.VITE_IMJS_ITWIN_ID;
+  const iModelId = import.meta.env.VITE_IMJS_IMODEL_ID;
   const authClient = Auth.getClient();
 
-  // const login = useCallback(async () => {
-  //   try {
-  //     await authClient.signInSilent();
-  //   } catch {
-  //     await authClient.signIn();
-  //   }
-  // }, [authClient]);
-
-  // useEffect(() => {
-  //   void login();
-  // }, [login]);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has("iTwinId")) {
-      setITwinId(urlParams.get("iTwinId") as string);
-    }
-    if (urlParams.has("iModelId")) {
-      setIModelId(urlParams.get("iModelId") as string);
-    }
-    if (urlParams.has("changesetId")) {
-      setChangesetId(urlParams.get("changesetId") as string);
-    }
-  }, []);
-
-  // useEffect(() => {
-  //   let url = `viewer?iTwinId=${iTwinId}`;
-
-  //   if (iModelId) {
-  //     url = `${url}&iModelId=${iModelId}`;
-  //   }
-
-  //   if (changesetId) {
-  //     url = `${url}&changesetId=${changesetId}`;
-  //   }
-  //   history.push(url);
-  // }, [iTwinId, iModelId, changesetId]);
 
   /** NOTE: This function will execute the "Fit View" tool after the iModel is loaded into the Viewer.
    * This will provide an "optimal" view of the model. However, it will override any default views that are
@@ -143,17 +96,9 @@ const App: React.FC = () => {
   return (
     <div className="viewer-container">
       <h1>iTwin.js web-viewer on vite.js</h1>
-      {!accessToken && (
-        <FillCentered>
-          <div className="signin-content">
-            <ProgressLinear indeterminate={true} labels={["Signing in..."]} />
-          </div>
-        </FillCentered>
-      )}
       <Viewer
         iTwinId={iTwinId ?? ""}
         iModelId={iModelId ?? ""}
-        changeSetId={changesetId}
         authClient={authClient}
         viewCreatorOptions={viewCreatorOptions}
         enablePerformanceMonitors={true} // see description in the README (https://www.npmjs.com/package/@itwin/web-viewer-react)
@@ -176,63 +121,63 @@ const App: React.FC = () => {
               measureGroup: false,
             },
           }),
-          // new ViewerStatusbarItemsProvider(),
-          // {
-          //   id: "TreeWidgetUIProvider",
-          //   getWidgets: () => [
-          //     createTreeWidget({
-          //       trees: [
-          //         {
-          //           id: ModelsTreeComponent.id,
-          //           getLabel: () => ModelsTreeComponent.getLabel(),
-          //           render: (props) => (
-          //             <ModelsTreeComponent
-          //               getSchemaContext={getSchemaContext}
-          //               density={props.density}
-          //               selectionStorage={unifiedSelectionStorage}
-          //               selectionMode={"extended"}
-          //               onPerformanceMeasured={props.onPerformanceMeasured}
-          //               onFeatureUsed={props.onFeatureUsed}
-          //             />
-          //           ),
-          //         },
-          //         {
-          //           id: CategoriesTreeComponent.id,
-          //           getLabel: () => CategoriesTreeComponent.getLabel(),
-          //           render: (props) => (
-          //             <CategoriesTreeComponent
-          //               getSchemaContext={getSchemaContext}
-          //               density={props.density}
-          //               selectionStorage={unifiedSelectionStorage}
-          //               onPerformanceMeasured={props.onPerformanceMeasured}
-          //               onFeatureUsed={props.onFeatureUsed}
-          //             />
-          //           ),
-          //         },
-          //       ],
-          //     }),
-          //   ],
-          // },
-          // new PropertyGridUiItemsProvider({
-          //   propertyGridProps: {
-          //     autoExpandChildCategories: true,
-          //     ancestorsNavigationControls: (props) => (
-          //       <AncestorsNavigationControls {...props} />
-          //     ),
-          //     contextMenuItems: [
-          //       (props) => <CopyPropertyTextContextMenuItem {...props} />,
-          //     ],
-          //     settingsMenuItems: [
-          //       (props) => (
-          //         <ShowHideNullValuesSettingsMenuItem
-          //           {...props}
-          //           persist={true}
-          //         />
-          //       ),
-          //     ],
-          //   },
-          // }),
-          // new MeasureToolsUiItemsProvider(),
+          new ViewerStatusbarItemsProvider(),
+          {
+            id: "TreeWidgetUIProvider",
+            getWidgets: () => [
+              createTreeWidget({
+                trees: [
+                  {
+                    id: ModelsTreeComponent.id,
+                    getLabel: () => ModelsTreeComponent.getLabel(),
+                    render: (props) => (
+                      <ModelsTreeComponent
+                        getSchemaContext={getSchemaContext}
+                        density={props.density}
+                        selectionStorage={unifiedSelectionStorage}
+                        selectionMode={"extended"}
+                        onPerformanceMeasured={props.onPerformanceMeasured}
+                        onFeatureUsed={props.onFeatureUsed}
+                      />
+                    ),
+                  },
+                  {
+                    id: CategoriesTreeComponent.id,
+                    getLabel: () => CategoriesTreeComponent.getLabel(),
+                    render: (props) => (
+                      <CategoriesTreeComponent
+                        getSchemaContext={getSchemaContext}
+                        density={props.density}
+                        selectionStorage={unifiedSelectionStorage}
+                        onPerformanceMeasured={props.onPerformanceMeasured}
+                        onFeatureUsed={props.onFeatureUsed}
+                      />
+                    ),
+                  },
+                ],
+              }),
+            ],
+          },
+          new PropertyGridUiItemsProvider({
+            propertyGridProps: {
+              autoExpandChildCategories: true,
+              ancestorsNavigationControls: (props) => (
+                <AncestorsNavigationControls {...props} />
+              ),
+              contextMenuItems: [
+                (props) => <CopyPropertyTextContextMenuItem {...props} />,
+              ],
+              settingsMenuItems: [
+                (props) => (
+                  <ShowHideNullValuesSettingsMenuItem
+                    {...props}
+                    persist={true}
+                  />
+                ),
+              ],
+            },
+          }),
+          new MeasureToolsUiItemsProvider(),
         ]}
         selectionStorage={unifiedSelectionStorage}
         getSchemaContext={getSchemaContext}
