@@ -37,12 +37,12 @@ import React, { useCallback, useMemo } from "react";
 
 import { Auth } from "./Auth";
 import { getSchemaContext, unifiedSelectionStorage } from "./selectionStorage";
+import { ThemeProvider } from "@itwin/itwinui-react";
 
 const App: React.FC = () => {
   const iTwinId = import.meta.env.VITE_IMJS_ITWIN_ID;
   const iModelId = import.meta.env.VITE_IMJS_IMODEL_ID;
   const authClient = Auth.getClient();
-
 
   /** NOTE: This function will execute the "Fit View" tool after the iModel is loaded into the Viewer.
    * This will provide an "optimal" view of the model. However, it will override any default views that are
@@ -94,95 +94,97 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="viewer-container">
-      <h1>iTwin.js web-viewer on vite.js</h1>
-      <Viewer
-        iTwinId={iTwinId ?? ""}
-        iModelId={iModelId ?? ""}
-        authClient={authClient}
-        viewCreatorOptions={viewCreatorOptions}
-        enablePerformanceMonitors={true} // see description in the README (https://www.npmjs.com/package/@itwin/web-viewer-react)
-        onIModelAppInit={onIModelAppInit}
-        mapLayerOptions={{
-          BingMaps: {
-            key: "key",
-            value: import.meta.env.VITE_IMJS_BING_MAPS_KEY ?? "",
-          },
-        }}
-        backendConfiguration={{
-          defaultBackend: {
-            rpcInterfaces: [ECSchemaRpcInterface],
-          },
-        }}
-        uiProviders={[
-          new ViewerNavigationToolsProvider(),
-          new ViewerContentToolsProvider({
-            vertical: {
-              measureGroup: false,
+    <ThemeProvider>
+      <div className="viewer-container">
+        <h1>iTwin.js web-viewer on vite.js</h1>
+        <Viewer
+          iTwinId={iTwinId ?? ""}
+          iModelId={iModelId ?? ""}
+          authClient={authClient}
+          viewCreatorOptions={viewCreatorOptions}
+          enablePerformanceMonitors={true} // see description in the README (https://www.npmjs.com/package/@itwin/web-viewer-react)
+          onIModelAppInit={onIModelAppInit}
+          mapLayerOptions={{
+            BingMaps: {
+              key: "key",
+              value: import.meta.env.VITE_IMJS_BING_MAPS_KEY ?? "",
             },
-          }),
-          new ViewerStatusbarItemsProvider(),
-          {
-            id: "TreeWidgetUIProvider",
-            getWidgets: () => [
-              createTreeWidget({
-                trees: [
-                  {
-                    id: ModelsTreeComponent.id,
-                    getLabel: () => ModelsTreeComponent.getLabel(),
-                    render: (props) => (
-                      <ModelsTreeComponent
-                        getSchemaContext={getSchemaContext}
-                        density={props.density}
-                        selectionStorage={unifiedSelectionStorage}
-                        selectionMode={"extended"}
-                        onPerformanceMeasured={props.onPerformanceMeasured}
-                        onFeatureUsed={props.onFeatureUsed}
-                      />
-                    ),
-                  },
-                  {
-                    id: CategoriesTreeComponent.id,
-                    getLabel: () => CategoriesTreeComponent.getLabel(),
-                    render: (props) => (
-                      <CategoriesTreeComponent
-                        getSchemaContext={getSchemaContext}
-                        density={props.density}
-                        selectionStorage={unifiedSelectionStorage}
-                        onPerformanceMeasured={props.onPerformanceMeasured}
-                        onFeatureUsed={props.onFeatureUsed}
-                      />
-                    ),
-                  },
-                ],
-              }),
-            ],
-          },
-          new PropertyGridUiItemsProvider({
-            propertyGridProps: {
-              autoExpandChildCategories: true,
-              ancestorsNavigationControls: (props) => (
-                <AncestorsNavigationControls {...props} />
-              ),
-              contextMenuItems: [
-                (props) => <CopyPropertyTextContextMenuItem {...props} />,
+          }}
+          backendConfiguration={{
+            defaultBackend: {
+              rpcInterfaces: [ECSchemaRpcInterface],
+            },
+          }}
+          uiProviders={[
+            new ViewerNavigationToolsProvider(),
+            new ViewerContentToolsProvider({
+              vertical: {
+                measureGroup: false,
+              },
+            }),
+            new ViewerStatusbarItemsProvider(),
+            {
+              id: "TreeWidgetUIProvider",
+              getWidgets: () => [
+                createTreeWidget({
+                  trees: [
+                    {
+                      id: ModelsTreeComponent.id,
+                      getLabel: () => ModelsTreeComponent.getLabel(),
+                      render: (props) => (
+                        <ModelsTreeComponent
+                          getSchemaContext={getSchemaContext}
+                          density={props.density}
+                          selectionStorage={unifiedSelectionStorage}
+                          selectionMode={"extended"}
+                          onPerformanceMeasured={props.onPerformanceMeasured}
+                          onFeatureUsed={props.onFeatureUsed}
+                        />
+                      ),
+                    },
+                    {
+                      id: CategoriesTreeComponent.id,
+                      getLabel: () => CategoriesTreeComponent.getLabel(),
+                      render: (props) => (
+                        <CategoriesTreeComponent
+                          getSchemaContext={getSchemaContext}
+                          density={props.density}
+                          selectionStorage={unifiedSelectionStorage}
+                          onPerformanceMeasured={props.onPerformanceMeasured}
+                          onFeatureUsed={props.onFeatureUsed}
+                        />
+                      ),
+                    },
+                  ],
+                }),
               ],
-              settingsMenuItems: [
-                (props) => (
-                  <ShowHideNullValuesSettingsMenuItem
-                    {...props}
-                    persist={true}
-                  />
+            },
+            new PropertyGridUiItemsProvider({
+              propertyGridProps: {
+                autoExpandChildCategories: true,
+                ancestorsNavigationControls: (props) => (
+                  <AncestorsNavigationControls {...props} />
                 ),
-              ],
-            },
-          }),
-          new MeasureToolsUiItemsProvider(),
-        ]}
-        selectionStorage={unifiedSelectionStorage}
-        getSchemaContext={getSchemaContext}
-      />
-    </div>
+                contextMenuItems: [
+                  (props) => <CopyPropertyTextContextMenuItem {...props} />,
+                ],
+                settingsMenuItems: [
+                  (props) => (
+                    <ShowHideNullValuesSettingsMenuItem
+                      {...props}
+                      persist={true}
+                    />
+                  ),
+                ],
+              },
+            }),
+            new MeasureToolsUiItemsProvider(),
+          ]}
+          selectionStorage={unifiedSelectionStorage}
+          getSchemaContext={getSchemaContext}
+        />
+      </div>
+    </ThemeProvider>
   );
 };
 
