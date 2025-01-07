@@ -95,7 +95,7 @@ const App: React.FC = () => {
 
   return (
     <div className="viewer-container">
-      <h1>iTwin.js web-viewer on vite.js</h1>
+      <h1>iTwin.js web viewer built with vite.js</h1>
       <Viewer
         iTwinId={iTwinId ?? ""}
         iModelId={iModelId ?? ""}

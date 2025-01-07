@@ -1,50 +1,13 @@
-# React + TypeScript + Vite
+# iTwin.js web viewer based app with vite.js
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project was created from [official starter app template](https://www.itwinjs.org/learning/tutorials/develop-web-viewer/) and simplified by removing handling of query string params
 
-Currently, two official plugins are available:
+It's configured with a public `Bay Town Plant` imodel, authentication was changed to get iTwin Sandbox token instead of interactive sign-in. It works in local dev server, but it's not after importing this project to codesandbox.io or Stackblitz. CORS is blocking the request. A hacky workaround is to get auth token manually and paste it as a constant in `Auth.ts` file
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## vite.js
 
-## Expanding the ESLint configuration
+This is an experiment to demonstrate that iTwin.js viewer app can be configured with vite.js instead of official webpack + @bentley/react-scripts setup.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+`vite.config.ts` contains bare minimum to get the starter app running. I found that handling sass transpilation of iTwin.js libraries is especially problematic, I couldn't find a ready to use vite plugin to cover it. The config has a cheap and dirty resolver, to handle errors that surfaced while running this app, but it's not production ready at all.
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+iTwin.js viewer needs assets to be copied to `public` folder. There is `vite-plugin-static-copy` plugin which can do that for build output, but it's not making a required copy before starting a local dev server. I used `copyfiles` cli script as a quick workaround.

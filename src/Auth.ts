@@ -6,6 +6,8 @@
 import type { BrowserAuthorizationClientConfiguration } from "@itwin/browser-authorization";
 import { BrowserAuthorizationClient } from "@itwin/browser-authorization";
 
+const token = "";
+
 export class Auth {
   private static _client: BrowserAuthorizationClient;
 
@@ -42,7 +44,7 @@ export class Auth {
   }
 
   public static async getAccessToken() {
-    return await fetch("https://connect-itwinjscodesandbox.bentley.com/api/userToken")
+    return token || await fetch("https://connect-itwinjscodesandbox.bentley.com/api/userToken")
       .then((response) => response.json())
       .then((data) =>
         data._jwt
